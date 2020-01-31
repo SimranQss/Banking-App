@@ -4,7 +4,6 @@ import { Redirect } from 'react-router';
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore"
 import Modal from '../../../library/common/components/modal/Modal'
-import * as ApiService from "../../../library/common/utils/service/apiService"
 
 export default class AccountList extends Component{
 
@@ -135,11 +134,9 @@ export default class AccountList extends Component{
         this.props.history.push('/login')
       else{
       let successCallback = (data)=>this.onApiResponse(data);
-      let failureCallback = (err) => console.log(err)
+      let failureCallback = (err) => console.log(err);
 
-      ApiService.getData('admin/getalluser',successCallback,failureCallback)
-
-      // AccountActions.listAccounts(cb,failureCallback);
+       AccountActions.listAccounts(successCallback,failureCallback);
      }
     }
 

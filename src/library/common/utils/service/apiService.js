@@ -10,19 +10,19 @@ import axios from 'axios';
   }
 
   export function postData(route,body,successCallback,errorCallback) {
-     axios.post(this.createCompleteRoute(route), body,this.generateHeaders())
+     axios.post(createCompleteRoute(route), body,generateHeaders())
      .then((res) => successCallback(res))
      .catch((err) => errorCallback(err));
   }
   
   export function updateData(route,body,successCallback,errorCallback){
-     axios.put(this.createCompleteRoute(route), body,this.generateHeaders())
+     axios.put(createCompleteRoute(route), body,generateHeaders())
      .then((res) => successCallback(res))
      .catch((err) => errorCallback(err));
   }
  
   export function deleteItem(route, successCallback,errorCallback){
-     axios.delete(this.createCompleteRoute(route),this.generateHeaders())
+     axios.delete(createCompleteRoute(route),generateHeaders())
       .then((res) => successCallback(res))
     .catch((err) => errorCallback(err));
   }

@@ -44,17 +44,19 @@ export default class AccountForm extends Component{
         if(this.state.fields){
           switch(this.currentRoute){
             case 'create':{
-             let callback = (data)=>{ 
+             let successCallback = (data)=>{ 
               this.showAlert(data.data.message);
               }
-             AccountActions.createAccount(this.state.fields, callback)
+              let failureCallback = (err) => console.log(err)
+              AccountActions.createAccount(this.state.fields, successCallback,failureCallback)
              break;
             }
             case 'update' :{
-              let callback = (data)=> {
+               let successCallback = (data)=>{ 
                 this.showAlert(data.data.message);
-               }
-              AccountActions.updateAccount(this.state.fields, callback)
+                }
+                let failureCallback = (err) => console.log(err)
+                AccountActions.updateAccount(this.state.fields, successCallback,failureCallback)
               break;
             }
             default : {
@@ -119,8 +121,12 @@ export default class AccountForm extends Component{
           this.setState({
             pageTitle : "Update"
           })
-          let cb = (data)=>this.onApiResponse(data); 
-          AccountActions.viewAccount(this.userId,cb);        
+          // let cb = (data)=>this.onApiResponse(data); 
+          // AccountActions.viewAccount(this.userId,cb);        
+          let successCallback = (data)=>this.onApiResponse(data);
+          let failureCallback = (err) => console.log(err);
+    
+           AccountActions.viewAccount(this.userId,successCallback,failureCallback);
            break;
          }
          case 'detail':
@@ -131,8 +137,13 @@ export default class AccountForm extends Component{
           this.setState({
             isReadOnly : true
           })
-          let cb = (data)=>this.onApiResponse(data); 
-          AccountActions.viewAccount(this.userId,cb);
+          // let cb = (data)=>this.onApiResponse(data); 
+          // AccountActions.viewAccount(this.userId,cb);
+
+          let successCallback = (data)=>this.onApiResponse(data);
+          let failureCallback = (err) => console.log(err);
+    
+           AccountActions.viewAccount(this.userId,successCallback,failureCallback);
            break;
          }
          default : {

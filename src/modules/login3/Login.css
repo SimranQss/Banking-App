@@ -9,14 +9,23 @@ p, div {
 }
 
 .wrapper {
-  background: url('../../resources/digital-banking.jpg') no-repeat center center fixed;
+  /* background: url('../../resources/digital-banking.jpg') no-repeat center center fixed;
   height: 97vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #4A4E69;
+  background-color: #4A4E69; */
+  background: url('../../resources/digital-banking.jpg') no-repeat center center fixed;
+  min-height: 100vh;
+  background-size: cover;
+  font-family: 'Raleway', sans-serif;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-wrapper {
@@ -85,8 +94,11 @@ loginbtn {
   color: #fefefe;
 }
 button:hover {
-  background-color: #4A4E69;
-  color: #fefefe;
+  /* background-color: #4A4E69;
+  color: #fefefe; */
+
+  background: #808f29;
+  color: #fff;
 }
 
 input.error {
@@ -120,3 +132,17 @@ input.error {
   display: flex;
   flex-wrap: wrap;
 }
+
+.submitBtn {width: 180px;
+  height: 50px;
+  font-weight: 400;
+  line-height: 40px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: none;
+  font-size: 22px;
+  background: #808f29;
+  color: #fff;
+  text-transform: uppercase;
+  margin-top: 5px;
+  font-family: 'Abel', sans-serif;}
