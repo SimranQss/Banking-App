@@ -21,17 +21,21 @@ export default class MyProfile extends React.Component{
     },
     isReadOnly : true ,// detailed view
     isRequired : true,
-    isAuthenticated : LoginStore.getUserStatus()
   }
+
+  isAuthenticated = LoginStore.getUserStatus();
+
+  onErrorResponse(err){
+    console.log("err")
+ }
 
   componentDidMount(){
     //console.log("my profile",this.state.isAuthenticated);
-    if(!this.state.isAuthenticated)
-      this.props.history.push('/login')
-    else{
-      let cb = (data)=>this.onApiResponse(data);
-      AccountActions.getAccountDetails(cb);
-   }
+      let successCallback = (data)=>this.onApiResponse(data);
+      let failureCallback = (err) => this.onErrorResponse(err);
+
+      // let cb = (data)=>this.onApiResponse(data);
+      AccountActions.getAccountDetails(successCallback,failureCallback);
   }
 
   onApiResponse(res){
@@ -40,10 +44,11 @@ export default class MyProfile extends React.Component{
  }
 
   render() {
-
-   if(!this.state.isAuthenticated)
-    return <Redirect to="/login"/>
-
+    if(!this.isAuthenticated)
+      return(<Redirect to={'/login'} />)
+    else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "true")
+      return <Redirect to="/admin/home"/>
+      else{
     return (
         <>
         <div className="card">
@@ -148,4 +153,5 @@ export default class MyProfile extends React.Component{
     </form>
         </>
   )}
+}
 }

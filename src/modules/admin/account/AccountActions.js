@@ -1,6 +1,6 @@
 
-import dispatcher from "../../../library/common/Dispatcher";
-import axios from 'axios';
+// import dispatcher from "../../../library/common/Dispatcher";
+// import axios from 'axios';
 import * as ApiService from "../../../library/common/utils/service/apiService";
 
 export const ACCOUNT_ACTIONS = {
@@ -12,9 +12,9 @@ export const ACCOUNT_ACTIONS = {
     REQUEST_FAILED: 'AccountActions.requestFailed'
 };
 
-const headers = {
-  'Content-Type': 'application/json',
-}
+// const headers = {
+//   'Content-Type': 'application/json',
+// }
 
 export function createAccount(user,successCallback,failureCallback) {
   ApiService.postData('admin/createaccount',user,successCallback,failureCallback)

@@ -28,6 +28,7 @@ class Home extends Component {
     }
    
     render() {    
+    // console.log(typeof localStorage.getItem('isAdmin'))
       if(!this.isAuthenticated)
         return(<Redirect to={'/login'} />)
       else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
@@ -46,7 +47,7 @@ class Home extends Component {
               </div>
             </main>
         )}
-    }
+  }
 }
  
 export default Home;

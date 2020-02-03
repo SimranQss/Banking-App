@@ -3,7 +3,7 @@ import {BrowserRouter as Router,Switch,Route,Redirect} from "react-router-dom";
 import AdminHome from '../../modules/admin/home/home'
 import UserHome from '../../modules/user/home/home'
 // import Login from '../../modules/login/Login'
-import Login from '../../modules/login3/Login' //temp
+import Login from '../../modules/login/Login' //temp
 import AccountList from "../../modules/admin/account/account-list"
 import AccountForm from "../../modules/admin/account/account-form";
 import AccountActivity from "../../modules/user/account/account-activity"

@@ -1,6 +1,7 @@
 import React,{Component}  from "react";
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore"
+import {Redirect} from "react-router-dom";
 
 export default class AccountActivity extends Component{
 
@@ -8,10 +9,9 @@ export default class AccountActivity extends Component{
       accountActivity :[],
       currentPage: 1,
       itemsPerPage: 5,
-      isAuthenticated : LoginStore.getUserStatus()
     }
 
-  
+    isAuthenticated  = LoginStore.getUserStatus();
 
     handleClick(event) {
       this.setState({
@@ -66,7 +66,12 @@ export default class AccountActivity extends Component{
         if(!accountActivity)
          return <span>Loading... </span>
         
-        return (
+         if(!this.isAuthenticated)
+            return (<Redirect to={'/login'} />)
+         else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "true")
+            return (<Redirect to="/admin/home"/>)
+         else{
+            return (
            <div className="container-fluid">
              <h3>Account Activity</h3>
              
@@ -109,21 +114,23 @@ export default class AccountActivity extends Component{
              </div>
           </div>
          </div>
-        </div>
-        )
+        </div>)
+       }
     }
 
     onApiResponse(res){
        this.setState({accountActivity : res.data.response})
     }
 
+    onErrorResponse(err){
+      console.log("err")
+   }
+
     componentDidMount(){
-        if(!this.state.isAuthenticated)
-          this.props.history.push('/login')
-        else{
-      let cb = (data)=>this.onApiResponse(data);
-      AccountActions.getTransactionHistory(cb);
+      let successCallback = (data)=>this.onApiResponse(data);
+      let failureCallback = (err) => this.onErrorResponse(err);
+      AccountActions.getTransactionHistory(successCallback,failureCallback);
      }
-    }
+
 
 }

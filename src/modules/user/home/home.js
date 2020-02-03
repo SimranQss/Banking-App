@@ -38,9 +38,14 @@ class Home extends Component {
       });
   }
 
+  onErrorResponse(err){
+    console.log("err")
+  }
+
   onSubmit(){
-    let cb = (data)=> this.onApiResponse(data);
-    AccountActions.makeTransaction(this.state,cb);
+    let successCallback = (data)=>this.onApiResponse(data);
+    let failureCallback = (err) => this.onErrorResponse(err);
+    AccountActions.makeTransaction(this.state,successCallback,failureCallback);
     this.setState({
       isShowing: false,
       amount : ''

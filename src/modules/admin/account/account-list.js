@@ -1,5 +1,5 @@
 import React,{Component}  from "react";
-import { Redirect } from 'react-router';
+import {Redirect} from "react-router-dom";
 
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore"
@@ -11,8 +11,8 @@ export default class AccountList extends Component{
         userList :[],
         isShowing : false,
         selectedUser: null,
-        isAuthenticated : LoginStore.getUserStatus()
     }
+    isAuthenticated = LoginStore.getUserStatus();
 
     viewUser(userId){
      // this.props.history.push('/account/details/'+userId, { route : 'detail',id : userId})
@@ -58,9 +58,11 @@ export default class AccountList extends Component{
         if(!this.state.userList)
          return <span>Loading... </span>
         
-     if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
-         return <Redirect to="/user/home"/>
-       else {
+    if(!this.isAuthenticated)
+      return (<Redirect to={'/login'} />)
+    else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
+      return (<Redirect to="/user/home"/>)
+    else{
         return (
           <>
           { this.state.isShowing ? 
@@ -121,23 +123,18 @@ export default class AccountList extends Component{
         </div>
       </>
         )
-      }
-    }
+     }
+  }
 
     onApiResponse(res){
-      console.log("hi","api success")
        this.setState({userList : res.data.response})
     }
 
     componentDidMount(){
-      if(!this.state.isAuthenticated)
-        this.props.history.push('/login')
-      else{
       let successCallback = (data)=>this.onApiResponse(data);
       let failureCallback = (err) => console.log(err);
 
        AccountActions.listAccounts(successCallback,failureCallback);
      }
-    }
 
 }

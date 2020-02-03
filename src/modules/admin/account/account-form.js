@@ -2,6 +2,7 @@ import React,{Component}  from "react";
 import Input from "../../../library/common/components/input/input"
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore";
+import {Redirect} from "react-router-dom";
 
 import Label from "../../../library/common/components/label/label"
 import Col from "../../../library/common/components/col/col"
@@ -27,9 +28,9 @@ export default class AccountForm extends Component{
       pageTitle : "",
       isReadOnly : false ,// other than detailed view
       isRequired : true,
-      isAuthenticated : LoginStore.getUserStatus()
     }
-  
+    isAuthenticated  = LoginStore.getUserStatus();
+
     constructor(){
       super();
       this.onSubmit = this.onSubmit.bind(this);
@@ -67,7 +68,8 @@ export default class AccountForm extends Component{
        }
       }
       
-      onCancel(event){
+      onCancel(){
+        // console.log("cancel")
        this.props.history.goBack();
       }
 
@@ -86,13 +88,12 @@ export default class AccountForm extends Component{
       }
   
       componentDidMount(){
-        // console.log(this.props)
-        // console.log(this.props.match.params)
 
-        if(!this.state.isAuthenticated)
-          this.props.history.push('/login')
+        if(!this.isAuthenticated)
+          return (<Redirect to={'/login'} />)
+        else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
+          return (<Redirect to="/user/home"/>)
         else{
-        // this.userId = this.props.location.state.id;
          if(this.props.location.state)
           this.currentRoute = this.props.location.state.route;
         this.userId = this.props.match.params.id;
@@ -151,7 +152,8 @@ export default class AccountForm extends Component{
          }
        }
       }
-    }
+     }
+
 
       onApiResponse(data){
         this.setState({
@@ -165,6 +167,11 @@ export default class AccountForm extends Component{
        }
 
       render(){
+      //   if(!this.isAuthenticated)
+      //   return (<Redirect to={'/login'} />)
+      // else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
+      //   return (<Redirect to="/user/home"/>)
+      // else{
           return (
               <>
               <Card>
@@ -278,4 +285,5 @@ export default class AccountForm extends Component{
               </>
           )
       }
+   // }
   }

@@ -1,16 +1,42 @@
-import React from "react";
-import {Redirect} from "react-router";
-
+import React from "react"
 import './Login.css'
 import LoginStore from '../../main/stores/LoginStore'
 import * as LoginActions from "./LoginActions";
-import Input from "../../library/common/components/input/input"
+import {Redirect} from "react-router"
+ import Input from "../../library/common/components/input/input"
+// import * as Validator from "../../library/common/utils/validation"
 
+
+const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+const validateForm = (fields,errors,callback) => {
+  let isValid = true;
+  Object.values(errors).forEach(
+    (val) => (val.length > 0 && (isValid = false))
+  );
+  Object.values(fields).forEach( 
+    (val) => {
+       (val.length === 0 && (isValid = false))
+    }
+  )
+  callback(isValid);
+}
 
 export default class Login extends React.Component{
    
   constructor(props){
     super(props)
+
+    this.state = {
+      formValid: false,
+      fields :{
+        emailId : '',
+        password : ''
+      },
+      errors: {
+        emailId: '',
+        password: '',
+      }
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.onLoginClick = this.onLoginClick.bind(this);
@@ -19,93 +45,139 @@ export default class Login extends React.Component{
     this.isAuthenticated = LoginStore.getUserStatus();
   }
 
-  handleChange({target:{name,value}}){
-    this.setState({ 
-      [name]: value
+  
+  handleChange(event){
+    const { name, value } = event.target;
+    this.setState({
+      fields: {                   
+          ...this.state.fields,    
+          [name]: value 
+      }
     });
+
+    let errors = this.state.errors;
+    switch (name) {
+      case 'emailId': {
+        if(value.length > 0){
+          errors.emailId = 
+          validEmailRegex.test(value)
+           ? ''
+            : 'Email is not valid!';}
+        else
+          errors.emailId = 'Field can\'t be empty'
+          break;
+      }
+      case 'password': {
+        if(value.length > 0){
+          errors.password = 
+          value.length < 8
+            ? 'Password must be 8 characters long!'
+            : '';}
+        else
+          errors.password = 'Field can\'t be empty'
+          break;
+      }
+      default:
+        break;
+    }
+    // this.setState({errors, [name]: value});
+    this.setState({errors})
+    // console.log("state",this.state)
+  }
+  
+  onApiResponse(response){
+    console.log("response",response)
   }
 
+  formValidated(isValid){
+    // console.log("isValid",isValid)
+    if(isValid){
+      LoginActions.loginUser(this.state.fields)
+    }
+   else{
+   //  let obj = this.state.fields;
+   // for (const key in obj){
+    //   console.log("key", key , "value", obj[key],"length",obj[key].length)
+        // (this.setState({
+        //   errors : {
+        //      ...this.state.errors,
+        //     key : 'Field can\'t be empty',
+        //   }
+        // }))
+    // }
+    Object.values(this.state.fields).forEach(
+      (val) => {
+         val.length === 0 && 
+         (this.setState(
+           {errors : {
+             emailId : 'Field can\'t be empty',
+             password :'Field can\'t be empty'
+           }})
+          )
+      }
+    );
+   }
+  }
+  
   onLoginClick(event){
      event.preventDefault();
-     LoginActions.loginUser(this.state)
+     let callback = (isValid) =>  this.formValidated(isValid);
+     validateForm(this.state.fields,this.state.errors,callback);
   }
 
   componentDidMount() {
-    ////console.log("component mounted" , process.env.NODE_ENV , process.env.REACT_APP_CLIENT_ID)
-     LoginStore.on("loginSuccessful", this.userLoggedIn);
-     LoginStore.on("loginError", this.logInError);
-   }
- 
-   componentWillUnmount() {
-     LoginStore.removeListener("loginSuccessful", this.userLoggedIn);
-     LoginStore.removeListener("loginError", this.logInError);
-   }
- 
-   userLoggedIn(){
-       console.log("isAdmin",localStorage.getItem("isAdmin"))
-      // console.log("isAdmin",LoginStore.isAdmin()); //check fn not working
+    LoginStore.on("loginSuccessful", this.userLoggedIn);
+    LoginStore.on("loginError", this.logInError);
+  }
 
-    //  if(localStorage.getItem("isAdmin"))
-    //   this.props.history.push('/admin/home')
-    //  else
-    //   this.props.history.push('/user/home')
+  componentWillUnmount() {
+    LoginStore.removeListener("loginSuccessful", this.userLoggedIn);
+    LoginStore.removeListener("loginError", this.logInError);
+  }
 
-    // if(!localStorage.getItem("isAdmin"))
-    this.props.history.push('/user/home')
-  //  else
-  //   this.props.history.push('/admin/home')
-   }
+  userLoggedIn(){
+      if(localStorage.getItem("isAdmin") === "true")
+        this.props.history.push('/admin/home')
+      else
+        this.props.history.push('/user/home')
+  }
+
+  logInError() {
+    console.log("Log in error")
+  }
  
-   logInError() {
-     //console.log("Log in error")
-   }
- 
-  //  componentWillMount(){
-  //   //  console.log("will mount")
-  //   if(this.isAuthenticated)
-  //     this.props.history.replace('/admin/home')
-  //  }
 
-   render(){
-    if(this.isAuthenticated && localStorage.getItem("isAdmin"))
-      return <Redirect to='/admin/home'/>
-    else if(this.isAuthenticated && !localStorage.getItem("isAdmin"))
-      return <Redirect to='/user/home'/>
-
-     return(
-      <> 
-        <div className="contents" id="login-form">    
-          <div className="loginBx" data-aos="fade-up" data-aos-duration="2500">
-            <div className="logorow">
-              {/* <img src="../../resources/kotak2.png" alt="Kotak" title="Kotak"/> */}
-            </div>  
-            {/* <!--  alert start  --> */}
-            {/* <div *ngIf="message" [ngClass]="{ 'alert': message, 'alert-success': 
-            message.type === 'success',
-            'alert-danger': message.type === 'error' }">{{message.text}}</div>       */}
-            {/* /<!--  alert end  --> */}
-            <form  onSubmit={this.onLoginClick} autoComplete="off" >
-                <div id="loginSection">
-                    <div className="loginInput">
-                      <label>Username</label>
-                      <Input type="text" name="emailId" placeholder="Enter Email Id" 
-                      autoComplete="off" required="required"
-                        onChange={this.handleChange}></Input>
-                    </div>
-                    <div className="loginPassword">
-                      <label>Password</label>
-                      <Input type="password"  name="password" placeholder="********" 
-                      autoComplete="off" required="required"
-                        onChange={this.handleChange} ></Input>
-                    </div>               
-                  <div className="loginBtn">
-                      <input type="submit" value="Login" id="btn" className="submitBtn"/>
-                    </div>         
-                </div>                   
-            </form>
+  render(){
+  const {errors} = this.state;
+  if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
+    return <Redirect to="/user/home"/>
+  else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "true")
+    return <Redirect to="/admin/home"/>
+  else{
+    return (
+    <div className='wrapper'>
+      <div className='form-wrapper'>
+      <h2>Login</h2>
+        <form onSubmit={this.onLoginClick} >
+          <div className='email'>
+            <label htmlFor="emailId">Email</label>
+            <Input type='email' name='emailId' onChange={this.handleChange}  />
+            {errors.emailId.length > 0 && 
+              <span className='error'>{errors.emailId}</span>}
           </div>
-        </div>
-      </>  
-    )
-   }
+          <div className='password'>
+            <label htmlFor="password">Password</label>
+            <Input type='password' name='password' onChange={this.handleChange}  />
+            {errors.password.length > 0 && 
+              <span className='error'>{errors.password}</span>}
+          </div>
+          <div className='submit'>
+            <button className="submitBtn">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+ }
+ }
 }
