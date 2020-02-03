@@ -1,23 +1,30 @@
 import React,{Component}  from "react";
+import {Redirect} from "react-router-dom";
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore"
-import {Redirect} from "react-router-dom";
+import Table from "../../../library/common/components/table/table"
 
 export default class AccountActivity extends Component{
 
     state ={
       accountActivity :[],
-      currentPage: 1,
+      // currentPage: 1,
       itemsPerPage: 5,
     }
 
     isAuthenticated  = LoginStore.getUserStatus();
+    tableHeaders =  [
+    'Sr. No.',
+    'Transaction Id', 
+    'Transaction Amount',
+    'Account Balance' ]
 
-    handleClick(event) {
-      this.setState({
-      currentPage: Number(event.target.id)
-      });
-    }
+    // onPaginationClick(event) {
+    //   console.log("click")
+    //   this.setState({
+    //   currentPage: Number(event.target.id)
+    //   });
+    // }
 
 
     // onPrevClick(){
@@ -36,33 +43,34 @@ export default class AccountActivity extends Component{
 
     render(){
 
-      const { accountActivity, currentPage, itemsPerPage } = this.state;
+      const { accountActivity,itemsPerPage } = this.state;
+      //const { accountActivity, currentPage, itemsPerPage } = this.state;
 
       // Logic for displaying current accountActivity
-      const lastIndex = currentPage * itemsPerPage;
-      const firstIndex = lastIndex - itemsPerPage;
-      const currentAccountActivity = accountActivity.slice(firstIndex, lastIndex);
-      const pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(accountActivity.length / itemsPerPage); i++) {
-          pageNumbers.push(i);
-        }
+      // const lastIndex = currentPage * itemsPerPage;
+      // const firstIndex = lastIndex - itemsPerPage;
+      // const currentAccountActivity = accountActivity.slice(firstIndex, lastIndex);
+      // const pageNumbers = [];
+      //   for (let i = 1; i <= Math.ceil(accountActivity.length / itemsPerPage); i++) {
+      //     pageNumbers.push(i);
+      //   }
      
-      const renderPageNumbers = pageNumbers.map(number => {
-        return (
-          <li
-            key={number}
-            id={number}
-            onClick={this.handleClick.bind(this)}>
-            {number}
-          </li>
-        );
-      });
+      // const renderPageNumbers = pageNumbers.map(number => {
+      //   return (
+      //     <li
+      //       key={number}
+      //       id={number}
+      //       onClick={this.onPaginationClick.bind(this)}>
+      //       {number}
+      //     </li>
+      //   );
+      // });
 
        let finalIndex = accountActivity.length-1;
        let balance = accountActivity[finalIndex] &&
                       accountActivity[finalIndex].balance
 
-       let startingIndex = (currentPage - 1) * itemsPerPage +1
+      //  let startingIndex = (currentPage - 1) * itemsPerPage +1
         if(!accountActivity)
          return <span>Loading... </span>
         
@@ -82,7 +90,12 @@ export default class AccountActivity extends Component{
              </div>
              <div className="card-body">
                <div className="table-responsive">
-              <table className="table">
+
+               <Table dataSource={accountActivity} tableHeaders = {this.tableHeaders} 
+               isPagination={true} tableColumns={this.tableColumns}
+               itemsPerPage= {itemsPerPage}></Table>
+
+              {/* <table className="table">
                   <thead>
                   <tr>
                     <th>Sr. No. </th>
@@ -96,7 +109,6 @@ export default class AccountActivity extends Component{
                     ({_id,amount,isCredit,balance},index) => 
                      <tr key={_id}>
                        <td>{startingIndex+index}</td>
-                       {/* <td>{(currentPage - 1) * itemsPerPage +index+1}</td> */}
                        <td>Chq/Ref No. : UPI-002409283844</td>
                        <td style={{"color" : isCredit ? 'blue' : 'red'}}>
                        {isCredit ? `+ ${amount}` : `- ${amount}`}</td>
@@ -104,11 +116,11 @@ export default class AccountActivity extends Component{
                      </tr>
                    )}  
                   </tbody>
-                </table>
+                </table> */}
                 {/* Pagination */}
-                <ul id="page-numbers">
+                {/* <ul id="page-numbers">
                 {renderPageNumbers}
-               </ul>
+               </ul> */}
                 {/* Pagination */}
 
              </div>

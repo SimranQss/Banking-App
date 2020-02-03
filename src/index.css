@@ -63,6 +63,7 @@ line-height: 18px;
   text-decoration: underline;
   text-transform: uppercase;
   cursor: pointer;
+  align-self: center;
 }
 
 .labelClass{

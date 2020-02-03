@@ -35,6 +35,47 @@ export function validateInput(Fieldtype,input){
     return error;
 }
 
+const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+const validateForm = (fields,errors,callback) => {
+  let isValid = true;
+  Object.values(errors).forEach(
+    (val) => (val.length > 0 && (isValid = false))
+  );
+  Object.values(fields).forEach( 
+    (val) => {
+       (val.length === 0 && (isValid = false))
+    }
+  )
+  callback(isValid);
+}
+export function validate(name,value){
+    let errors = {}
+    switch (name) {
+        case 'emailId': {
+          if(value.length > 0){
+            errors.emailId = 
+            validEmailRegex.test(value)
+             ? ''
+              : 'Email is not valid!';}
+          else
+            errors.emailId = 'Field can\'t be empty'
+            break;
+        }
+        case 'password': {
+          if(value.length > 0){
+            errors.password = 
+            value.length < 8
+              ? 'Password must be 8 characters long!'
+              : '';}
+          else
+            errors.password = 'Field can\'t be empty'
+            break;
+        }
+        default:
+          break;
+      }
+      return errors;
+}
 export function isEmpty(input){
   if(input !== null || input !== undefined || input !== '')
    return false;

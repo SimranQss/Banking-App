@@ -172,7 +172,7 @@ export default class Login extends React.Component{
               <span className='error'>{errors.password}</span>}
           </div>
           <div className='submit'>
-            <button className="submitBtn">Login</button>
+            <button className="loginBtn">Login</button>
           </div>
         </form>
       </div>
