@@ -14,8 +14,8 @@ class Table extends React.Component {
 
     render(){
 
-        const { dataSource,tableColumns,itemsPerPage,isPagination } = this.props;
-        const currentPage = this.state.currentPage;
+        const { dataSource,tableColumns,itemsPerPage,isPagination } = this.props,
+         currentPage = this.state.currentPage;
 
         const lastIndex = currentPage * itemsPerPage;
         const firstIndex = lastIndex - itemsPerPage;

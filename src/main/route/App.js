@@ -10,19 +10,19 @@ import AccountActivity from "../../modules/user/account/account-activity"
 import MyProfile from "../../modules/user/account/account-profile"
 import WrapLayout from "../../library/common/components/layout/WrapLayout"
 
-// import axios from 'axios';
-// // import cookie from 'cookie-machine';
-// // import {hashHistory} from 'react-router';
+import axios from 'axios';
+// import cookie from 'cookie-machine';
+// import {hashHistory} from 'react-router';
 
-// axios.interceptors.response.use(null, function(err) {
-//   if ( err.status === 401 ) {
-//     localStorage.removeItem('token')
-//     console.log("remove token")
-//     // hashHistory.push('/login');
-//   }
+axios.interceptors.response.use(null, function(err) {
+  if ( err.status === 401 ) {
+    localStorage.removeItem('token')
+    console.log("remove token")
+    // hashHistory.push('/login');
+  }
 
-//   return Promise.reject(err);
-// });
+  return Promise.reject(err);
+});
 
 export default class App extends React.Component{
 

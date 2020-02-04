@@ -3,7 +3,7 @@ import './Login.css'
 import LoginStore from '../../main/stores/LoginStore'
 import * as LoginActions from "./LoginActions";
 import {Redirect} from "react-router"
- import Input from "../../library/common/components/input/input"
+import Input from "../../library/common/components/input/input"
 // import * as Validator from "../../library/common/utils/validation"
 
 
@@ -38,7 +38,7 @@ export default class Login extends React.Component{
       }
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onLoginClick = this.onLoginClick.bind(this);
     this.userLoggedIn = this.userLoggedIn.bind(this);
     this.logInError = this.logInError.bind(this);
@@ -46,16 +46,19 @@ export default class Login extends React.Component{
   }
 
   
-  handleChange(event){
+  onChange(event){
     const { name, value } = event.target;
     this.setState({
       fields: {                   
           ...this.state.fields,    
           [name]: value 
       }
+    }, ()=>{
     });
 
     let errors = this.state.errors;
+
+  //  console.log( "errors" , Validator.validate(name,value))
     switch (name) {
       case 'emailId': {
         if(value.length > 0){
@@ -80,9 +83,8 @@ export default class Login extends React.Component{
       default:
         break;
     }
-    // this.setState({errors, [name]: value});
     this.setState({errors})
-    // console.log("state",this.state)
+    //  console.log("state",this.state)
   }
   
   onApiResponse(response){
@@ -90,33 +92,19 @@ export default class Login extends React.Component{
   }
 
   formValidated(isValid){
-    // console.log("isValid",isValid)
     if(isValid){
       LoginActions.loginUser(this.state.fields)
     }
    else{
     let {fields} = this.state; 
+    let error = {};
+
    for (const key in fields){
-       console.log("key", key , "value", fields[key],"length",fields[key].length)
-      fields[key].length === 0 && (this.setState({
-          errors : {
-               ...this.state.errors,
-           [key] : 'Field can\'t be empty',
-          }
-        },()=> console.log(key,this.state.errors[key])
-      ))
+     if(!fields[key].length){
+        error[key] = 'Field can\'t be empty';
+     }
     }
-    // Object.values(this.state.fields).forEach(
-    //   (val) => {
-    //      val.length === 0 && 
-    //      (this.setState(
-    //        {errors : {
-    //          emailId : 'Field can\'t be empty',
-    //          password :'Field can\'t be empty'
-    //        }})
-    //       )
-    //   }
-    // );
+    Object.keys(error).length && this.setState({errors: error});
    }
   }
   
@@ -162,13 +150,13 @@ export default class Login extends React.Component{
         <form onSubmit={this.onLoginClick} >
           <div className='email'>
             <label htmlFor="emailId">Email</label>
-            <Input type='email' name='emailId' onChange={this.handleChange}  />
+            <Input type='email' name='emailId' onChange={this.onChange}  />
             {errors.emailId.length > 0 && 
               <span className='error'>{errors.emailId}</span>}
           </div>
           <div className='password'>
             <label htmlFor="password">Password</label>
-            <Input type='password' name='password' onChange={this.handleChange}  />
+            <Input type='password' name='password' onChange={this.onChange}  />
             {errors.password.length > 0 && 
               <span className='error'>{errors.password}</span>}
           </div>

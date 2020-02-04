@@ -48,6 +48,7 @@ const validateForm = (fields,errors,callback) => {
   )
   callback(isValid);
 }
+
 export function validate(name,value){
     let errors = {}
     switch (name) {

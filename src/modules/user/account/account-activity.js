@@ -57,8 +57,8 @@ export default class AccountActivity extends Component{
        }
     }
 
-    onApiResponse(res){
-       this.setState({accountActivity : res.data.response})
+    onApiResponse({data:{response= []}}){
+       this.setState({accountActivity : response})
     }
 
     onErrorResponse(err){

@@ -19,7 +19,7 @@ class Home extends Component {
        this.onMyProfileClick = this.onMyProfileClick.bind(this);
        this.onCancel = this.onCancel.bind(this);
        this.onSubmit = this.onSubmit.bind(this);
-       this.handleChange = this.handleChange.bind(this);
+       this.onChange = this.onChange.bind(this);
        this.logout = this.logout.bind(this);
     }
 
@@ -57,9 +57,9 @@ class Home extends Component {
      this.props.history.push('/account/activity')
  }
 
- handleChange({target}){
+ onChange({target:{name = "", value = ""}}){
     this.setState({
-      [target.name] : target.value
+      [name] : value
     });
       // console.log("state",this.state)
     }
@@ -104,7 +104,7 @@ class Home extends Component {
                     : <span className = "color-alpha" >Withdrawal Amount</span>
                      }
                     <input pattern="[0-9]*" name = 'amount' 
-                    placeholder="Amount" type = 'text' onChange= {this.handleChange} />
+                    placeholder="Amount" type = 'text' onChange= {this.onChange} />
                 </Modal>
                 }
                  <h3>Hello ! Welcome to User Panel !!</h3>
