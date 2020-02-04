@@ -14,7 +14,7 @@ class Table extends React.Component {
 
     render(){
 
-        const { dataSource,tableHeaders,itemsPerPage,isPagination } = this.props;
+        const { dataSource,tableColumns,itemsPerPage,isPagination } = this.props;
         const currentPage = this.state.currentPage;
 
         const lastIndex = currentPage * itemsPerPage;
@@ -37,33 +37,42 @@ class Table extends React.Component {
         });
 
         let startingIndex = (currentPage - 1) * itemsPerPage +1;
-
-
         return (
             <>
               <table className="table">
                 <thead>
                 <tr>
-                    {tableHeaders && tableHeaders.map( (item,index) =>
-                      <th key={index}>{item}</th>
+                  {tableColumns && tableColumns.map(
+                    (colData,index) =>
+                        <th key={index}>{colData.name}</th>
                     )}
-                </tr>
+                  </tr>
                 </thead>
                 <tbody>
-                { currentDataSource && currentDataSource.map(
-                ({_id,amount,isCredit,balance},index) => 
-                  <tr key={_id}>
-                    <td>{startingIndex+index}</td>
-                    <td>Chq/Ref No. : UPI-002409283844</td>
-                    <td style={{"color" : isCredit ? 'blue' : 'red'}}>
-                    {isCredit ? `+ ${amount}` : `- ${amount}`}</td>
-                    <td>{balance}</td>
-                  </tr>
-                )}  
+              {currentDataSource && currentDataSource.map(
+                (item,index1) =>
+                <tr key={item._id}>
+                  {tableColumns && tableColumns.map(
+                    (colData,index) => {
+                      let value = "";
+                      if(colData.renderer && typeof colData.renderer === "function"){
+                        value = colData.renderer(item, colData);
+                      }
+                      else{
+                        value = item[colData.id]
+                      }
+                      return !index ? <td key={index}>{startingIndex+index1}</td>
+                      : <td key={index}>{value}</td>
+                    }
+                    )}
+                </tr>
+              )}
+
                 </tbody>
               </table>
               {/* Pagination */}
-              { isPagination && <ul id="page-numbers">
+              { isPagination && dataSource && (dataSource.length > itemsPerPage) 
+                && <ul id="page-numbers">
                 {renderPageNumbers}
               </ul>
               }

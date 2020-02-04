@@ -8,69 +8,26 @@ export default class AccountActivity extends Component{
 
     state ={
       accountActivity :[],
-      // currentPage: 1,
       itemsPerPage: 5,
     }
 
     isAuthenticated  = LoginStore.getUserStatus();
-    tableHeaders =  [
-    'Sr. No.',
-    'Transaction Id', 
-    'Transaction Amount',
-    'Account Balance' ]
-
-    // onPaginationClick(event) {
-    //   console.log("click")
-    //   this.setState({
-    //   currentPage: Number(event.target.id)
-    //   });
-    // }
-
-
-    // onPrevClick(){
-    //   this.setState((prevstate)=>{
-    //     firstIndex : prevstate.startIndex - 5,
-    //     lastIndex : prevstate.endIndex - 5
-    // })
-    // }
-
-    // onNextClick(){
-    //   this.setState((prevstate)=>{
-    //     startIndex : prevstate.startIndex + 5,
-    //     endIndex : prevstate.endIndex + 5
-    // })
-    // }
+    tableColumns = [
+      {name : 'Sr. No.',id  : ''},
+       {name : 'Transaction Id',id  : '_id'},
+       {name : 'Transaction Amount', id  : 'amount',renderer:(data, items)=>{
+         return <div style={{"color" : data.isCredit ? 'blue' : 'red'}}>
+         {data.isCredit ? `+ ${data['amount']}` : `- ${data.amount}`}</div> 
+        }},
+       {name : 'Account Balance', id  : 'balance'}
+    ]
 
     render(){
 
       const { accountActivity,itemsPerPage } = this.state;
-      //const { accountActivity, currentPage, itemsPerPage } = this.state;
-
-      // Logic for displaying current accountActivity
-      // const lastIndex = currentPage * itemsPerPage;
-      // const firstIndex = lastIndex - itemsPerPage;
-      // const currentAccountActivity = accountActivity.slice(firstIndex, lastIndex);
-      // const pageNumbers = [];
-      //   for (let i = 1; i <= Math.ceil(accountActivity.length / itemsPerPage); i++) {
-      //     pageNumbers.push(i);
-      //   }
-     
-      // const renderPageNumbers = pageNumbers.map(number => {
-      //   return (
-      //     <li
-      //       key={number}
-      //       id={number}
-      //       onClick={this.onPaginationClick.bind(this)}>
-      //       {number}
-      //     </li>
-      //   );
-      // });
-
        let finalIndex = accountActivity.length-1;
        let balance = accountActivity[finalIndex] &&
                       accountActivity[finalIndex].balance
-
-      //  let startingIndex = (currentPage - 1) * itemsPerPage +1
         if(!accountActivity)
          return <span>Loading... </span>
         
@@ -90,39 +47,9 @@ export default class AccountActivity extends Component{
              </div>
              <div className="card-body">
                <div className="table-responsive">
-
-               <Table dataSource={accountActivity} tableHeaders = {this.tableHeaders} 
+               <Table dataSource={accountActivity} 
                isPagination={true} tableColumns={this.tableColumns}
                itemsPerPage= {itemsPerPage}></Table>
-
-              {/* <table className="table">
-                  <thead>
-                  <tr>
-                    <th>Sr. No. </th>
-                    <th>Transaction Id</th> 
-                    <th>Transaction Amount</th>
-                    <th>Account Balance</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                   { currentAccountActivity && currentAccountActivity.map(
-                    ({_id,amount,isCredit,balance},index) => 
-                     <tr key={_id}>
-                       <td>{startingIndex+index}</td>
-                       <td>Chq/Ref No. : UPI-002409283844</td>
-                       <td style={{"color" : isCredit ? 'blue' : 'red'}}>
-                       {isCredit ? `+ ${amount}` : `- ${amount}`}</td>
-                       <td>{balance}</td>
-                     </tr>
-                   )}  
-                  </tbody>
-                </table> */}
-                {/* Pagination */}
-                {/* <ul id="page-numbers">
-                {renderPageNumbers}
-               </ul> */}
-                {/* Pagination */}
-
              </div>
           </div>
          </div>

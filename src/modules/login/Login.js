@@ -95,27 +95,28 @@ export default class Login extends React.Component{
       LoginActions.loginUser(this.state.fields)
     }
    else{
-   //  let obj = this.state.fields;
-   // for (const key in obj){
-    //   console.log("key", key , "value", obj[key],"length",obj[key].length)
-        // (this.setState({
-        //   errors : {
-        //      ...this.state.errors,
-        //     key : 'Field can\'t be empty',
-        //   }
-        // }))
-    // }
-    Object.values(this.state.fields).forEach(
-      (val) => {
-         val.length === 0 && 
-         (this.setState(
-           {errors : {
-             emailId : 'Field can\'t be empty',
-             password :'Field can\'t be empty'
-           }})
-          )
-      }
-    );
+    let {fields} = this.state; 
+   for (const key in fields){
+       console.log("key", key , "value", fields[key],"length",fields[key].length)
+      fields[key].length === 0 && (this.setState({
+          errors : {
+               ...this.state.errors,
+           [key] : 'Field can\'t be empty',
+          }
+        },()=> console.log(key,this.state.errors[key])
+      ))
+    }
+    // Object.values(this.state.fields).forEach(
+    //   (val) => {
+    //      val.length === 0 && 
+    //      (this.setState(
+    //        {errors : {
+    //          emailId : 'Field can\'t be empty',
+    //          password :'Field can\'t be empty'
+    //        }})
+    //       )
+    //   }
+    // );
    }
   }
   

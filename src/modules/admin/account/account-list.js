@@ -4,6 +4,7 @@ import {Redirect} from "react-router-dom";
 import * as AccountActions from "./AccountActions";
 import LoginStore from "../../../main/stores/LoginStore"
 import Modal from '../../../library/common/components/modal/Modal'
+import Table from "../../../library/common/components/table/table"
 
 export default class AccountList extends Component{
 
@@ -11,11 +12,32 @@ export default class AccountList extends Component{
         userList :[],
         isShowing : false,
         selectedUser: null,
+        itemsPerPage : 5
     }
     isAuthenticated = LoginStore.getUserStatus();
 
+    tableColumns = [
+      {name : 'Sr. No.',id  : ''},
+       {name : 'Account No',id  : 'accountNo'},
+       {name : 'Account Type', id  : 'accountType' , renderer : (item,colData) => {
+        return item.accountType ? 'Saving' : 'Current'
+       } }, 
+       {name : 'User Name', id  : 'username' , renderer : (item,colData) => {
+        return item.firstName+' ' +item.lastName
+       }},
+       {name : 'Account Balance', id  : 'balance'},
+       {name : 'Action', id  : 'action' , renderer : (item, colData) => {
+         return  <><span className="mdi mdi-eye action"    
+         onClick= {this.viewUser.bind(this,item._id)}></span>
+         <span className="mdi mdi-pencil action" 
+         onClick= {this.updateUser.bind(this,item._id)}></span>
+         <span className="mdi mdi-delete action" 
+         onClick= {this.deleteUser.bind(this,item._id)}></span>
+         </>
+       }}
+    ]
+
     viewUser(userId){
-     // this.props.history.push('/account/details/'+userId, { route : 'detail',id : userId})
      this.props.history.push(`/account/details/${userId}`, { route : 'detail'})
     }
 
@@ -55,6 +77,7 @@ export default class AccountList extends Component{
   }
 
     render(){
+      const {userList,itemsPerPage} = this.state
         if(!this.state.userList)
          return <span>Loading... </span>
         
@@ -85,38 +108,10 @@ export default class AccountList extends Component{
              </div>
              <div className="card-body">
                <div className="table-responsive">
-              <table className="table">
-                  <thead>
-                  <tr>
-                  {/* style={{ borderColor : this.state.isShowing ?
-                     "none" : "2px solid #dee2e6"}} */}
-                    <th >Account Number </th>
-                    <th>Account Type </th>
-                    <th>User Name </th>
-                    <th>Account Balance </th>
-                    <th>Action</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.userList && this.state.userList.map(
-                      ({_id,accountNo,accountType,firstName,lastName,balance}) => 
-                     <tr key={_id}>
-                       <td>{accountNo}</td>
-                       <td>{accountType ? 'Saving' : 'Current'}</td>
-                       <td>{firstName+' ' +lastName}</td>
-                       <td>{balance}</td>
-                       <td>
-                         <span className="mdi mdi-eye action"    
-                         onClick= {this.viewUser.bind(this,_id)}></span>
-                         <span className="mdi mdi-pencil action" 
-                         onClick= {this.updateUser.bind(this,_id)}></span>
-                         <span className="mdi mdi-delete action" 
-                         onClick= {this.deleteUser.bind(this,_id)}></span>
-                       </td>
-                     </tr>
-                   )}             
-                  </tbody>
-                </table>
+
+              <Table dataSource={userList} 
+               isPagination={true} tableColumns={this.tableColumns}
+               itemsPerPage= {itemsPerPage}></Table>
              </div>
           </div>
          </div>
