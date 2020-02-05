@@ -1,12 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import $ from 'jquery';
-// import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import './index.scss';
+import './styles/style.css';
+import './styles/index.scss';
 import App from './main/route/App';
 import * as serviceWorker from './serviceWorker';
 import '../node_modules/@mdi/font/css/materialdesignicons.min.css'; 

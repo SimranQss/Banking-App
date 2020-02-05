@@ -1,25 +1,11 @@
-import React from "react"
-import './Login.css'
-import LoginStore from '../../main/stores/LoginStore'
+import React from "react";
+import {Redirect} from "react-router";
+
+import '../../styles/Login.css';
+import LoginStore from '../../main/stores/LoginStore';
 import * as LoginActions from "./LoginActions";
-import {Redirect} from "react-router"
-import Input from "../../library/common/components/input/input"
-// import * as Validator from "../../library/common/utils/validation"
-
-
-const validEmailRegex = RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
-const validateForm = (fields,errors,callback) => {
-  let isValid = true;
-  Object.values(errors).forEach(
-    (val) => (val.length > 0 && (isValid = false))
-  );
-  Object.values(fields).forEach( 
-    (val) => {
-       (val.length === 0 && (isValid = false))
-    }
-  )
-  callback(isValid);
-}
+import Input from "../../library/common/components/input/input";
+import * as Validator from "../../library/common/utils/validation";
 
 export default class Login extends React.Component{
    
@@ -53,37 +39,14 @@ export default class Login extends React.Component{
           ...this.state.fields,    
           [name]: value 
       }
-    }, ()=>{
     });
 
-    let errors = this.state.errors;
-
-  //  console.log( "errors" , Validator.validate(name,value))
-    switch (name) {
-      case 'emailId': {
-        if(value.length > 0){
-          errors.emailId = 
-          validEmailRegex.test(value)
-           ? ''
-            : 'Email is not valid!';}
-        else
-          errors.emailId = 'Field can\'t be empty'
-          break;
-      }
-      case 'password': {
-        if(value.length > 0){
-          errors.password = 
-          value.length < 8
-            ? 'Password must be 8 characters long!'
-            : '';}
-        else
-          errors.password = 'Field can\'t be empty'
-          break;
-      }
-      default:
-        break;
-    }
-    this.setState({errors})
+    let error = Validator.validateInput(name,value);
+    this.setState({
+      errors : {
+        ...this.state.errors,
+      [name] : error }
+    })
     //  console.log("state",this.state)
   }
   
@@ -92,26 +55,28 @@ export default class Login extends React.Component{
   }
 
   formValidated(isValid){
+    let {fields} = this.state; 
     if(isValid){
-      LoginActions.loginUser(this.state.fields)
+      LoginActions.loginUser(fields)
     }
    else{
-    let {fields} = this.state; 
     let error = {};
-
-   for (const key in fields){
-     if(!fields[key].length){
+    let isError = false;
+    for (const key in fields){
+      if(!fields[key].length){
+        isError = true;
         error[key] = 'Field can\'t be empty';
      }
     }
-    Object.keys(error).length && this.setState({errors: error});
+    isError && this.setState({errors: error});
    }
   }
   
   onLoginClick(event){
+    const {fields,errors}  = this.state
      event.preventDefault();
-     let callback = (isValid) =>  this.formValidated(isValid);
-     validateForm(this.state.fields,this.state.errors,callback);
+     let callback = (isValid) => this.formValidated(isValid);
+     Validator.validateOnSubmit(fields,errors,callback);
   }
 
   componentDidMount() {
@@ -151,13 +116,13 @@ export default class Login extends React.Component{
           <div className='email'>
             <label htmlFor="emailId">Email</label>
             <Input type='email' name='emailId' onChange={this.onChange}  />
-            {errors.emailId.length > 0 && 
+            {errors.emailId && 
               <span className='error'>{errors.emailId}</span>}
           </div>
           <div className='password'>
             <label htmlFor="password">Password</label>
             <Input type='password' name='password' onChange={this.onChange}  />
-            {errors.password.length > 0 && 
+            {errors.password && 
               <span className='error'>{errors.password}</span>}
           </div>
           <div className='submit'>

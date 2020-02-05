@@ -8,7 +8,7 @@ import AccountList from "../../modules/admin/account/account-list"
 import AccountForm from "../../modules/admin/account/account-form";
 import AccountActivity from "../../modules/user/account/account-activity"
 import MyProfile from "../../modules/user/account/account-profile"
-import WrapLayout from "../../library/common/components/layout/WrapLayout"
+import WrapLayout from "../../library/common/containers/DefaultLayout/WrapLayout"
 
 import axios from 'axios';
 // import cookie from 'cookie-machine';

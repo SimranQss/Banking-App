@@ -15,12 +15,12 @@ class Table extends React.Component {
     render(){
 
         const { dataSource,tableColumns,itemsPerPage,isPagination } = this.props,
-         currentPage = this.state.currentPage;
+         currentPage = this.state.currentPage,
 
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-        const currentDataSource = dataSource.slice(firstIndex, lastIndex);
-        const pageNumbers = [];
+         lastIndex = currentPage * itemsPerPage,
+         firstIndex = lastIndex - itemsPerPage,
+         currentDataSource = dataSource.slice(firstIndex, lastIndex),
+         pageNumbers = [];
         for (let i = 1; i <= Math.ceil(dataSource.length / itemsPerPage); i++) {
             pageNumbers.push(i);
         }

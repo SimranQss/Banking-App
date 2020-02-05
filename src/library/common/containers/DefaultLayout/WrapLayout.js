@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route } from 'react-router-dom'
-import Footer from '../footer/footer'
-import Header from '../header/header'
+import Footer from './DefaultFooter'
+import Header from './DefaultHeader'
 
 
 const WrapLayout = ({ component: Component, ...rest }) => {
-  // console.log("RouteLayout");
   
   return (
     <Route {...rest} render={matchProps => (
