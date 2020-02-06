@@ -82,6 +82,7 @@ class Home extends Component {
     }
 
     render() {
+      const {isShowing,action,isCredit} = this.state;
         if(!this.isAuthenticated)
            return(<Redirect to={'/login'} />)
         else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "true")
@@ -89,17 +90,17 @@ class Home extends Component {
         else {
           return (
          <>
-         { this.state.isShowing ? 
+         { isShowing ? 
             <div onClick={this.close} className="back-drop"></div> 
             : null }
               <main style={{background: "darkgoldenrod"}}>
-                  { this.state.isShowing && <Modal
+                  { isShowing && <Modal
                     className="modal"
-                    action = {this.state.action}
-                    show={this.state.isShowing}
+                    action = {action}
+                    show={isShowing}
                     cancel={this.onCancel}
                     submit =  {this.onSubmit }>
-                    {this.state.isCredit ? 
+                    {isCredit ? 
                     <span className = "color-alpha" >Deposit Amount</span>
                     : <span className = "color-alpha" >Withdrawal Amount</span>
                      }

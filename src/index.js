@@ -8,8 +8,30 @@ import './styles/index.scss';
 import App from './main/route/App';
 import * as serviceWorker from './serviceWorker';
 import '../node_modules/@mdi/font/css/materialdesignicons.min.css'; 
+import axios from "axios"
 
- ReactDOM.render(<App />, document.getElementById('root'));
+axios.interceptors.request.use( request => { 
+    // console.log("request",request);
+    return request;
+},
+error => {
+    // console.log("error",error);
+    return Promise.reject(error)
+})
+
+axios.interceptors.response.use( response => { 
+    // console.log("response",response);
+    return response;
+},
+error => {
+     console.log("Hi error",error, error.response.status);
+    if(error.response.status === 403)
+    console.log("Hi redirect login");
+    //   this.props.history.push('/login')
+    return Promise.reject(error)
+})
+
+ReactDOM.render(<App />, document.getElementById('root'));
 
 //  https://reactjs.org/tutorial/tutorial.html
 

@@ -46,8 +46,8 @@ export default class AccountList extends Component{
      }
 
      userDeleted(data,userId){
-      var index = this.state.userList.findIndex(p => p._id === userId)
-      const userList = [...this.state.userList]; 
+      var index = userList.findIndex(p => p._id === userId)
+      const userList = [...userList]; 
       if (index !== -1) {
         userList.splice(index, 1);
         this.setState({userList: userList});
@@ -70,15 +70,16 @@ export default class AccountList extends Component{
    }
 
   onSubmit(){
+    const {selectedUser = null} = this.state;
    let callback = (data)=> {
-    this.userDeleted(data,this.state.selectedUser);
+    this.userDeleted(data,selectedUser);
    }
-   AccountActions.deleteAccount(this.state.selectedUser ,callback);
+   AccountActions.deleteAccount(selectedUser ,callback);
   }
 
     render(){
-      const {userList,itemsPerPage} = this.state
-        if(!this.state.userList)
+      const {userList,itemsPerPage,isShowing} = this.state
+        if(!userList)
          return <span>Loading... </span>
         
     if(!this.isAuthenticated)
@@ -88,13 +89,13 @@ export default class AccountList extends Component{
     else{
         return (
           <>
-          { this.state.isShowing ? 
+          { isShowing ? 
             <div onClick={this.close} className="back-drop"></div> 
           : null }
-          { this.state.isShowing && <Modal
+          { isShowing && <Modal
            className="modal"
            action = "Delete"
-           show={this.state.isShowing}
+           show={isShowing}
            cancel={this.onCancel.bind(this)}
            submit =  {this.onSubmit.bind(this) }>
            Are you sure you want to delete the selected item ??
@@ -102,7 +103,7 @@ export default class AccountList extends Component{
           }
            <div className="container-fluid">
             <div className="card" 
-            style ={{ backgroundColor : this.state.isShowing ? "transparent" : "#fff" }}>
+            style ={{ backgroundColor : isShowing ? "transparent" : "#fff" }}>
             <div className="card-header">
              List of users
              </div>

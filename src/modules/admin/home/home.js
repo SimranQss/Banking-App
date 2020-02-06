@@ -4,13 +4,11 @@ import { Redirect } from 'react-router';
 
 import LoginStore from '../../../main/stores/LoginStore'
 import Button from '../../../library/common/components/button/button'
+import NoData from "../../../library/common/components/nodata";
 
 class Home extends Component {
- 
-    constructor(){
-       super();
-       this.isAuthenticated = LoginStore.getUserStatus();
-    }
+
+    isAuthenticated = LoginStore.getUserStatus();
 
     createUser(){
       this.props.history.push('/account/create',{route : 'create'})
@@ -27,25 +25,31 @@ class Home extends Component {
         this.props.history.replace('/login')
     }
    
-    render() {    
-    // console.log(typeof localStorage.getItem('isAdmin'))
+    
+    render() {
+      const renderHomePage = (
+        <main style={{background: "darkred"}}>
+        <h3>Hello ! Welcome to Admin Panel !!</h3>
+        <div style={{display:"flex",justifyContent: "center",padding:"10px"}}>
+           <Button className="mbutton" value="Create Account" 
+           onClick={this.createUser.bind(this)}></Button>
+           <Button className="mbutton" value="Show User List" 
+           onClick={this.showUsers.bind(this)}></Button>
+            <Button className="mbutton" value="Logout" 
+            onClick={this.logout.bind(this)}></Button>
+        </div>
+      </main>)
+      
+      let home = <NoData/>
+   
       if(!this.isAuthenticated)
         return(<Redirect to={'/login'} />)
       else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
         return <Redirect to="/user/home"/>
       else {
+        home = renderHomePage;
         return (
-            <main style={{background: "darkred"}}>
-              <h3>Hello ! Welcome to Admin Panel !!</h3>
-              <div style={{display:"flex",justifyContent: "center",padding:"10px"}}>
-                 <Button className="mbutton" value="Create Account" 
-                 onClick={this.createUser.bind(this)}></Button>
-                 <Button className="mbutton" value="Show User List" 
-                 onClick={this.showUsers.bind(this)}></Button>
-                  <Button className="mbutton" value="Logout" 
-                  onClick={this.logout.bind(this)}></Button>
-              </div>
-            </main>
+          home
         )}
   }
 }

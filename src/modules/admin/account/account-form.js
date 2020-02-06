@@ -40,16 +40,16 @@ export default class AccountForm extends Component{
     }
 
       onSubmit(event){
+        const {fields} = this.state
         event.preventDefault();
-        //console.log("form data",this.state.fields)
-        if(this.state.fields){
+        if(fields){
           switch(this.currentRoute){
             case 'create':{
              let successCallback = (data)=>{ 
               this.showAlert(data.data.message);
               }
               let failureCallback = (err) => console.log(err)
-              AccountActions.createAccount(this.state.fields, successCallback,failureCallback)
+              AccountActions.createAccount(fields, successCallback,failureCallback)
              break;
             }
             case 'update' :{
@@ -57,7 +57,7 @@ export default class AccountForm extends Component{
                 this.showAlert(data.data.message);
                 }
                 let failureCallback = (err) => console.log(err)
-                AccountActions.updateAccount(this.state.fields, successCallback,failureCallback)
+                AccountActions.updateAccount(fields, successCallback,failureCallback)
               break;
             }
             default : {
@@ -88,15 +88,15 @@ export default class AccountForm extends Component{
       }
   
       componentDidMount(){
-
+        const {location:{state},match:{params:{id}}} = this.props
         if(!this.isAuthenticated)
           return (<Redirect to={'/login'} />)
         else if(this.isAuthenticated && localStorage.getItem('isAdmin') === "false")
           return (<Redirect to="/user/home"/>)
         else{
-         if(this.props.location.state)
-          this.currentRoute = this.props.location.state.route;
-        this.userId = this.props.match.params.id;
+         if(state)
+          this.currentRoute = state.route;
+        this.userId = id;
        switch(this.currentRoute){
          case 'create':{
           //console.log("create")
@@ -167,10 +167,13 @@ export default class AccountForm extends Component{
        }
 
       render(){
+        const {pageTitle,isReadOnly,fields:{firstName,
+              lastName,age,emailId,mobileNumber,panCardNo,adharCardNumber,religion,
+              accountType,balance} } = this.state;
           return (
               <>
               <Card>
-              <h3> <b>Account</b> > {this.state.pageTitle && this.state.pageTitle}</h3>
+              <h3> <b>Account</b> > {pageTitle && pageTitle}</h3>
               </Card> 
   
            <form style={{border: "none"}} onSubmit={this.onSubmit}>
@@ -180,14 +183,14 @@ export default class AccountForm extends Component{
                     <Col lg="6" md="6" sm="6">
                       <Label className="labelClass">First Name</Label>
                       <Input type="text"  name="firstName" 
-                      placeholder="Enter First Name"  apivalue={this.state.fields.firstName}
-                      onChange={this.onChange} isReadOnly= {this.state.isReadOnly}
+                      placeholder="Enter First Name"  apivalue={firstName}
+                      onChange={this.onChange} isReadOnly= {isReadOnly}
                       className="inputClass" required ></Input>
                     </Col>
                     <Col lg="6" md="6" sm="6">
                       <Label className="labelClass">Last Name</Label>
-                      <Input type="text"  name="lastName" isReadOnly= {this.state.isReadOnly}
-                      placeholder="Enter Last Name" apivalue={this.state.fields.lastName} 
+                      <Input type="text"  name="lastName" isReadOnly= {isReadOnly}
+                      placeholder="Enter Last Name" apivalue={lastName} 
                       onChange={this.onChange} 
                       className="inputClass" required></Input>
                     </Col>
@@ -196,15 +199,15 @@ export default class AccountForm extends Component{
                   <Row>
                     <Col lg="6" md="6" sm="6">
                       <Label className="labelClass">Age</Label>
-                      <Input type="number"  name="age" isReadOnly= {this.state.isReadOnly}
-                      placeholder="Enter Age"  apivalue={this.state.fields.age}
+                      <Input type="number"  name="age" isReadOnly= {isReadOnly}
+                      placeholder="Enter Age"  apivalue={age}
                       onChange={this.onChange} 
                       className="inputClass" required></Input>
                     </Col>
                     <Col lg="6" md="6" sm="6">
                       <Label className="labelClass">Email Id</Label>
-                      <Input type="email"  name="emailId" isReadOnly= {this.state.isReadOnly}
-                      placeholder="Enter Email id"  apivalue={this.state.fields.emailId}
+                      <Input type="email"  name="emailId" isReadOnly= {isReadOnly}
+                      placeholder="Enter Email id"  apivalue={emailId}
                       onChange={this.onChange} 
                       className="inputClass" required></Input>
                     </Col>
@@ -213,16 +216,16 @@ export default class AccountForm extends Component{
                   <Row>
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Contact Number</Label>
-                        <Input type="number"  name="mobileNumber" isReadOnly= {this.state.isReadOnly}
-                      placeholder="Enter Contact Number"  apivalue={this.state.fields.mobileNumber}
+                        <Input type="number"  name="mobileNumber" isReadOnly= {isReadOnly}
+                      placeholder="Enter Contact Number"  apivalue={mobileNumber}
                       onChange={this.onChange} 
                       className="inputClass" required></Input>
                       </Col>
   
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Pan Card Number</Label>
-                        <Input type="text"  name="panCardNo" isReadOnly= {this.state.isReadOnly}
-                         placeholder="Enter Pan Card Number"  apivalue={this.state.fields.panCardNo}
+                        <Input type="text"  name="panCardNo" isReadOnly= {isReadOnly}
+                         placeholder="Enter Pan Card Number"  apivalue={panCardNo}
                         onChange={this.onChange} 
                         className="inputClass" required></Input>
                       </Col>
@@ -232,16 +235,16 @@ export default class AccountForm extends Component{
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Adhaar Card Number</Label>
                         <Input type="text"  name="adharCardNumber" 
-                          isReadOnly= {this.state.isReadOnly}
+                          isReadOnly= {isReadOnly}
                           placeholder="Enter Adhaar Card Number" 
-                          apivalue={this.state.fields.adharCardNumber}
+                          apivalue={adharCardNumber}
                           onChange={this.onChange} 
                           className="inputClass" required></Input>
                       </Col>
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Nationality</Label>
-                        <Input type="text"  name="religion" isReadOnly= {this.state.isReadOnly}
-                          placeholder="Enter Nationality"  apivalue={this.state.fields.religion}
+                        <Input type="text"  name="religion" isReadOnly= {isReadOnly}
+                          placeholder="Enter Nationality"  apivalue={religion}
                           onChange={this.onChange} 
                           className="inputClass" required></Input>
                       </Col>
@@ -251,8 +254,8 @@ export default class AccountForm extends Component{
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Account Type</Label>
                         <select className="selectClass" name="accountType" 
-                        disabled= {this.state.isReadOnly}
-                        value={this.state.fields.accountType}  onChange={this.onChange}>
+                        disabled= {isReadOnly}
+                        value={accountType}  onChange={this.onChange}>
                           <option value="1">Saving</option>
                           <option value="0">Current</option>
                         </select>
@@ -261,13 +264,13 @@ export default class AccountForm extends Component{
                       <Col lg="6" md="6" sm="6">
                         <Label className="labelClass">Opening Balance</Label>
                         <Input type="number"  name="balance" isReadOnly= {this.isReadOnly}
-                          placeholder="Enter Opening Balance"  apivalue={this.state.fields.balance}
+                          placeholder="Enter Opening Balance"  apivalue={balance}
                           onChange={this.onChange} 
                           className="inputClass" required></Input>
                       </Col>
                   </Row>
 
-                   { !this.state.isReadOnly ? 
+                   { !isReadOnly ? 
                     <div style={{display:"flex",justifyContent:"space-between"}}>
                         <Input className="submitBtn" type="submit" text="CREATE"></Input>
                         <Label className="cancelBtn" onClick={this.onCancel}>cancel</Label>

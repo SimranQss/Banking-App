@@ -1,21 +1,23 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://192.168.1.173:4000'; //global config
+
   const baseUrl = 'http://192.168.1.173:4000';
 
   function getData(route, successCallback,errorCallback) {
-    axios.get(createCompleteRoute(route),generateHeaders())
+    axios.get(route, generateHeaders())
     .then((res) => successCallback(res))
     .catch((err) => errorCallback(err));
   }
 
   function postData(route,body,successCallback,errorCallback) {
-     axios.post(createCompleteRoute(route), body,generateHeaders())
+     axios.post(route ,body,generateHeaders())
      .then((res) => successCallback(res))
      .catch((err) => errorCallback(err));
   }
   
   function updateData(route,body,successCallback,errorCallback){
-     axios.put(createCompleteRoute(route), body,generateHeaders())
+     axios.put(route, body,generateHeaders())
      .then((res) => successCallback(res))
      .catch((err) => errorCallback(err));
   }

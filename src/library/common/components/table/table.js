@@ -16,12 +16,12 @@ class Table extends React.Component {
 
         const { dataSource,tableColumns,itemsPerPage,isPagination } = this.props,
          currentPage = this.state.currentPage,
-
          lastIndex = currentPage * itemsPerPage,
          firstIndex = lastIndex - itemsPerPage,
          currentDataSource = dataSource.slice(firstIndex, lastIndex),
-         pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(dataSource.length / itemsPerPage); i++) {
+         pageNumbers = [],
+         itemsNo = dataSource.length / itemsPerPage;
+        for (let i = 1; i <= Math.ceil(itemsNo); i++) {
             pageNumbers.push(i);
         }
 
@@ -37,37 +37,40 @@ class Table extends React.Component {
         });
 
         let startingIndex = (currentPage - 1) * itemsPerPage +1;
+
+        const renderTableHeaders = tableColumns.map(
+          (colData,index) => {
+              return (<th key={index}>{colData.name}</th>)
+          });
+
+        const renderTableBody =  currentDataSource.map(
+          (item,index1) => {
+         return ( <tr key={item._id}>
+            {tableColumns && tableColumns.map(
+              (colData,index) => {
+                let value = "";
+                if(colData.renderer && typeof colData.renderer === "function"){
+                  value = colData.renderer(item, colData);
+                }
+                else{
+                  value = item[colData.id]
+                }
+                return !index ? <td key={index}>{startingIndex+index1}</td>
+                : <td key={index}>{value}</td>
+              }
+              )}
+          </tr>
+        )});
         return (
             <>
               <table className="table">
                 <thead>
                 <tr>
-                  {tableColumns && tableColumns.map(
-                    (colData,index) =>
-                        <th key={index}>{colData.name}</th>
-                    )}
+                  {tableColumns && renderTableHeaders}
                   </tr>
                 </thead>
                 <tbody>
-              {currentDataSource && currentDataSource.map(
-                (item,index1) =>
-                <tr key={item._id}>
-                  {tableColumns && tableColumns.map(
-                    (colData,index) => {
-                      let value = "";
-                      if(colData.renderer && typeof colData.renderer === "function"){
-                        value = colData.renderer(item, colData);
-                      }
-                      else{
-                        value = item[colData.id]
-                      }
-                      return !index ? <td key={index}>{startingIndex+index1}</td>
-                      : <td key={index}>{value}</td>
-                    }
-                    )}
-                </tr>
-              )}
-
+                { renderTableBody}
                 </tbody>
               </table>
               {/* Pagination */}

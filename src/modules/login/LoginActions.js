@@ -15,7 +15,7 @@
         })
   }
   let failureCallback = (error) => {
-    console.log(error);
+    //console.log(error);
         dispatcher.dispatch({
           type: LOGIN_ACTIONS.LOGIN_FAILED,
           error: error
